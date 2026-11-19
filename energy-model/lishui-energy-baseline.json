@@ -1,0 +1,114 @@
+{
+  "model": "Whalefall Lishui plant — energy & utility baseline",
+  "updated": "2026-11-19",
+  "currency": "CNY",
+  "operating_hours_per_year": 7200,
+  "feed_basis": {
+    "lfp_batteries_t_per_year": 50000,
+    "ncm_batteries_t_per_year": 20000,
+    "black_mass_yield": 0.5,
+    "lfp_black_mass_t_per_year": 25000,
+    "ncm_black_mass_t_per_year": 10000
+  },
+  "prices": {
+    "electricity_rmb_per_kwh": {
+      "value": 0.55,
+      "status": "PLACEHOLDER",
+      "note": "Awaiting Zhejiang Green Power PPA tariff; 2026 Zhejiang new-energy mechanism price reference 0.3816"
+    },
+    "natural_gas_rmb_per_nm3": {
+      "value": null,
+      "status": "AWAITING",
+      "note": "For pyrolysis furnace + secondary combustion chamber duty"
+    },
+    "steam_rmb_per_t": {
+      "value": 200,
+      "status": "PLACEHOLDER",
+      "note": "Not market-verified"
+    },
+    "municipal_sewage_rmb_per_t": {
+      "value": 2.25,
+      "status": "VERIFIED",
+      "note": "Lishui heavy-pollution chemical industry rate (丽发改价格〔2016〕470号), subject to COD/SS/TP/TN multi-factor surcharges; general industrial rate 1.55"
+    }
+  },
+  "lines": [
+    {
+      "id": "dry_line_electricity",
+      "description": "Mechanical dismantling/crushing line — N2-inerted shredding of charged packs, no discharge station",
+      "basis_t_feed_per_year": 50000,
+      "electricity_gwh_per_year": 12.6,
+      "intensity_kwh_per_t_feed": 252,
+      "avg_load_kw": 1750,
+      "status": "FIELD ACTUAL (Lishui)",
+      "note": "Supersedes blueprint planning baseline of 850 kW / 6.8 GWh on 8,000 h for the 8 ktpa Phase-1 line (850 kWh/t). Metered figure INCLUDES the N2 generator — see n2_generator_psa."
+    },
+    {
+      "id": "n2_generator_psa",
+      "description": "PSA nitrogen generator for inert shredding atmosphere — core safety equipment, not optional",
+      "n2_consumption_nm3_per_t_feed": {
+        "value": 100,
+        "range": [50, 200],
+        "status": "PLACEHOLDER — swap for metered Nm3/t when available"
+      },
+      "psa_specific_power_kwh_per_nm3": {
+        "value": 0.5,
+        "range": [0.4, 0.6],
+        "status": "PLACEHOLDER — typical PSA at ~99.5% purity"
+      },
+      "derived": {
+        "n2_demand_nm3_per_year": 5000000,
+        "n2_avg_nm3_per_h": 694,
+        "electricity_gwh_per_year": 2.5,
+        "avg_load_kw": 347,
+        "cost_rmb_per_year_at_0.55": 1375000,
+        "cost_rmb_per_t_feed": 27.5,
+        "cost_rmb_per_t_black_mass": 55,
+        "share_of_dry_line_electricity": 0.2
+      },
+      "accounting": {
+        "lishui": "DISAGGREGATION ONLY — N2 generator electricity is already inside the 12.6 GWh dry-line field actual; do not add",
+        "international_module": "ADDITIVE line item — international 1 t/h module is costed from scratch: 8,000 t/a feed -> 0.8 M Nm3/a, ~100 Nm3/h PSA skid, ~50 kW avg, ~400 MWh/a (~A$120k/a at A$0.30/kWh, ~A$15/t feed)"
+      }
+    },
+    {
+      "id": "thermal_gas",
+      "description": "Natural gas — pyrolysis furnace + secondary combustion chamber (二燃室)",
+      "gas_gwhth_per_year": 5.2,
+      "status": "PLANNING ESTIMATE (blueprint session) — Lishui NG actual awaited",
+      "design_decision": "Secondary combustion chamber is the mainstream China option for dismantling/crushing off-gas; RTO NOT used (HF attacks ceramic media, dust clogging, ~1,100 C / >=2 s residence needed for dioxin control under HJ 1186-2021). Quench + alkali scrubbing follows."
+    },
+    {
+      "id": "wet_line",
+      "description": "Hydromet line (NCM + LFP black mass, 35 kt/a combined)",
+      "electricity_gwh_per_year": 100,
+      "steam_t_per_year": 112000,
+      "steam_t_per_t_black_mass": 3.2,
+      "status": "FIELD ACTUAL (Lishui)"
+    },
+    {
+      "id": "water_wastewater",
+      "description": "Process water in / wastewater out — pretreated on-site to GB 31573-2015, discharged to municipal sewer",
+      "process_water_t_per_year": 3500,
+      "wastewater_lfp_t_per_year": 59103,
+      "wastewater_ncm_t_per_year": 75864,
+      "pretreatment_om_rmb_per_t": {
+        "value": 10,
+        "range": [8, 15],
+        "status": "PLACEHOLDER"
+      },
+      "note": "No ZLD required; pretreat-to-sewer is a siting advantage carried into the international module design"
+    }
+  ],
+  "design_decisions": {
+    "pre_treatment": "Nitrogen-inerted shredding of charged packs — NO discharge (放电) station anywhere. Where discharge is used at other facilities it is chemistry-agnostic (no separate NCM/LFP discharge).",
+    "tail_gas": "Secondary combustion chamber (二燃室), not RTO.",
+    "compliance": "GB 31573-2015 (inorganic chemical emissions) + HJ 1186-2021 (waste Li-ion traction battery treatment); wastewater pretreated on-site then municipal sewer."
+  },
+  "open_data_points": [
+    "Zhejiang Green Power PPA tariff (locks largest utility line)",
+    "Metered N2 consumption (Nm3/t feed) — replaces placeholder",
+    "Natural gas actual for pyrolysis + 二燃室",
+    "Labour and maintenance schedules"
+  ]
+}
